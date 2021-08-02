@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+    jupyter_stats:
+        build: ./dai_stats
+        ports:
+            - '8888:8888'
+        volumes:
+        - "D:/workspace/notebooks:/home/jovyan"
+        container_name: dai_stats
+        environment:
+            JUPYTER_ENABLE_LAB: 'yes'
