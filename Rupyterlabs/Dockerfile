@@ -7,15 +7,45 @@ FROM $BASE_CONTAINER
 LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
 LABEL editor="Jimmy Lim"
 
+### jupyter-rssesion-proxy
+RUN python3 -m pip install jupyter-rsession-proxy
+RUN cd /tmp/ && \
+    git clone --depth 1 https://github.com/jupyterhub/jupyter-server-proxy && \
+    cd jupyter-server-proxy/jupyterlab-server-proxy && \
+    npm install && npm run build && jupyter labextension link . && \
+    npm run build && jupyter lab build
+
+### install rstudio-server
 USER root
 
+# rstudio dependency lib
+RUN apt-get update --yes -qq && \
+    wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl1.0/libssl1.0.0_1.0.2n-1ubuntu5.7_amd64.deb && \
+    dpkg -i libssl1.0.0_1.0.2n-1ubuntu5.7_amd64.deb
+
+# install rstudio-server
+RUN curl --silent -L --fail https://download2.rstudio.org/rstudio-server-1.1.419-amd64.deb > /tmp/rstudio.deb && \
+    echo '24cd11f0405d8372b4168fc9956e0386 /tmp/rstudio.deb' | md5sum -c - && \
+    apt-get install -y /tmp/rstudio.deb && \
+    rm /tmp/rstudio.deb
+ENV PATH=$PATH:/usr/lib/rstudio-server/bin
+
+## install pyodbc
+RUN apt-get install -y --no-install-recommends build-essential gcc && \
+    apt-get install -y python3.9-dev
+
+# for MS ODBC driver
+RUN wget https://packages.microsoft.com/ubuntu/20.04/prod/pool/main/m/msodbcsql17/msodbcsql17_17.8.1.1-1_amd64.deb && \
+    ACCEPT_EULA=Y dpkg -i msodbcsql17_17.8.1.1-1_amd64.deb && \
+    pip install pyodbc
+
 # ffmpeg for matplotlib anim & dvipng+cm-super for latex labels
-RUN apt-get update --yes && \
-    apt-get install --yes --no-install-recommends ffmpeg dvipng cm-super && \
+RUN apt-get install --yes --no-install-recommends ffmpeg dvipng cm-super && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER ${NB_UID}
 
+### pyodbc conda - after
 # Install Python 3 packages
 RUN conda install --quiet --yes \
     'altair=4.1.*' \
@@ -63,7 +93,5 @@ ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"
 
 RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
     fix-permissions "/home/${NB_USER}"
-
-USER ${NB_UID}
 
 WORKDIR "${HOME}"

@@ -1,12 +1,13 @@
 version: '3'
 
 services:
-    jupyter_stats:
-        build: ./dai_stats
+    analysis_tools:
+        build: ./Rupyterlabs
         ports:
             - '8888:8888'
         volumes:
-        - "D:/workspace/notebooks:/home/jovyan"
-        container_name: dai_stats
+        - "D:/workspace/ds_env:/home/jovyan"
+        container_name: Rupyterlabs
         environment:
             JUPYTER_ENABLE_LAB: 'yes'
+            GRANT_SUDO: 'yes'

@@ -1,6 +1,6 @@
-# Docker for Diagnosis AI stats
+# Docker for Data scientist
 
-dai_stats : 데이터 분석용 application (ML/AI 제외)
+Rupyterlabs : 데이터 분석용 application (ML/AI 제외)
 
 ## 1. Build, creates, starts
 ```
