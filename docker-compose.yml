@@ -6,8 +6,17 @@ services:
         ports:
             - '8888:8888'
         volumes:
-        - "D:/workspace/ds_env:/home/jovyan"
+            - "D:/workspace/ds_env:/home/jovyan"
         container_name: Rupyterlabs
         environment:
             JUPYTER_ENABLE_LAB: 'yes'
+            GRANT_SUDO: 'yes'
+    web_app_streamlit:
+        build: ./DSboard
+        ports:
+            - '8501:8501'
+        volumes:
+            - "D:/workspace/streamlit:/app"
+        container_name: DSboard
+        environment:
             GRANT_SUDO: 'yes'
