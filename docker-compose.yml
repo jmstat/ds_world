@@ -6,7 +6,7 @@ services:
         ports:
             - '8888:8888'
         volumes:
-            - "D:/workspace/ds_env:/home/jovyan"
+            - "${WORKSPACE_DIR}/ds_env:/home/jovyan"
         container_name: Rupyterlabs
         environment:
             JUPYTER_ENABLE_LAB: 'yes'
@@ -16,7 +16,18 @@ services:
         ports:
             - '8501:8501'
         volumes:
-            - "D:/workspace/streamlit:/app"
-        container_name: DSboard
+            - "${WORKSPACE_DIR}/streamlit:/app"
+        container_name: DS_board
         environment:
             GRANT_SUDO: 'yes'
+    db_postgres:
+        image: postgres:14.0-alpine
+        container_name: DS_db
+        restart: always
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_USER: "${DB_USER_ID}"
+            POSTGRES_PASSWORD: "${DB_USER_PASSWORD}"
+        volumes:
+            - ${WORKSPACE_DIR}/db:/var/lib/postgresql/data

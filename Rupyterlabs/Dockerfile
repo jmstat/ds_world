@@ -7,37 +7,43 @@ FROM $BASE_CONTAINER
 LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
 LABEL editor="Jimmy Lim"
 
-### jupyter-rssesion-proxy
-RUN python3 -m pip install jupyter-rsession-proxy
-RUN cd /tmp/ && \
-    git clone --depth 1 https://github.com/jupyterhub/jupyter-server-proxy && \
-    cd jupyter-server-proxy/jupyterlab-server-proxy && \
-    npm install && npm run build && jupyter labextension link . && \
-    npm run build && jupyter lab build
+# ### jupyter-rssesion-proxy
+# RUN python3 -m pip install jupyter-rsession-proxy
+# RUN cd /tmp/ && \
+#     git clone --depth 1 https://github.com/jupyterhub/jupyter-server-proxy && \
+#     cd jupyter-server-proxy/jupyterlab-server-proxy && \
+#     npm install && npm run build && jupyter labextension link . && \
+#     npm run build && jupyter lab build
 
 ### install rstudio-server
 USER root
+RUN apt-get update --yes -qq
 
-# rstudio dependency lib
-RUN apt-get update --yes -qq && \
-    wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl1.0/libssl1.0.0_1.0.2n-1ubuntu5.7_amd64.deb && \
-    dpkg -i libssl1.0.0_1.0.2n-1ubuntu5.7_amd64.deb
+# # rstudio dependency lib
+# RUN apt-get update --yes -qq && \
+#     wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl1.0/libssl1.0.0_1.0.2n-1ubuntu5.7_amd64.deb && \
+#     dpkg -i libssl1.0.0_1.0.2n-1ubuntu5.7_amd64.deb
 
-# install rstudio-server
-RUN curl --silent -L --fail https://download2.rstudio.org/rstudio-server-1.1.419-amd64.deb > /tmp/rstudio.deb && \
-    echo '24cd11f0405d8372b4168fc9956e0386 /tmp/rstudio.deb' | md5sum -c - && \
-    apt-get install -y /tmp/rstudio.deb && \
-    rm /tmp/rstudio.deb
-ENV PATH=$PATH:/usr/lib/rstudio-server/bin
+# # install rstudio-server
+# # RUN curl --silent -L --fail https://download2.rstudio.org/server/bionic/amd64/rstudio-server-2021.09.0-351-amd64.deb > /tmp/rstudio.deb && \
+# RUN wget https://download2.rstudio.org/server/bionic/amd64/rstudio-server-2021.09.0-351-amd64.deb && \
+#     mv rstudio-server-2021.09.0-351-amd64.deb /tmp/rstudio.deb && \
+#     apt-get install -y libc6 && \
+#     # echo '24cd11f0405d8372b4168fc9956e0386 /tmp/rstudio.deb' | md5sum -c - && \
+#     apt-get install -y /tmp/rstudio.deb && \
+#     rm /tmp/rstudio.deb
+# ENV PATH=$PATH:/usr/lib/rstudio-server/bin
+# ENV RSESSION_PROXY_RSTUDIO_1_4=1
 
 ## install pyodbc
 RUN apt-get install -y --no-install-recommends build-essential gcc && \
     apt-get install -y python3.9-dev
 
-# for MS ODBC driver
+# for MS ODBC driver, psycopg2 (postgres)
 RUN wget https://packages.microsoft.com/ubuntu/20.04/prod/pool/main/m/msodbcsql17/msodbcsql17_17.8.1.1-1_amd64.deb && \
     ACCEPT_EULA=Y dpkg -i msodbcsql17_17.8.1.1-1_amd64.deb && \
     pip install pyodbc
+RUN conda install --quiet --yes psycopg2
 
 # ffmpeg for matplotlib anim & dvipng+cm-super for latex labels
 RUN apt-get install --yes --no-install-recommends ffmpeg dvipng cm-super && \
