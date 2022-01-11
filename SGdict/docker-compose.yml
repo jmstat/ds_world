@@ -15,6 +15,7 @@ services:
     web_app_dict:
         build: ./DSweb
         container_name: DS_dict_web
+        restart: always
         ports:
             - "3838:3838"
         environment:
