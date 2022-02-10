@@ -23,7 +23,8 @@ RUN R -e 'install.packages(c( \
               "shinydashboard", \
               "DT", \
               "ggplot2", \
-              "RPostgreSQL" \
+              "RPostgreSQL", \
+              "shinyalert" \
             ), \
             repos="https://packagemanager.rstudio.com/cran/__linux__/focal/2021-04-23"\
           )'
