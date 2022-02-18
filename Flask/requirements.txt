@@ -1,0 +1,11 @@
+# Write Down package with versions that are used in the project.
+flask
+flask_restx
+azure-storage-blob
+redis
+psycopg2
+gunicorn
+requests_toolbelt
+pandas
+numpy
+beautifulsoup4
