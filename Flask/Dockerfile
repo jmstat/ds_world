@@ -14,8 +14,6 @@ COPY . /api
 
 EXPOSE 5000
 
-RUN sed -i '/CipherString = DEFAULT/s/^#\?/#/' /etc/ssl/openssl.cnf
-
 RUN chmod +x docker-entrypoint.sh
 
 ENTRYPOINT ["/bin/bash", "docker-entrypoint.sh"]
