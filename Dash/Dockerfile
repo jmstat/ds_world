@@ -10,6 +10,6 @@ RUN pip3 install --upgrade pip
 
 RUN pip3 install -r /tmp/requirements.txt
 
-EXPOSE 8050
+EXPOSE 5000
 
-CMD ["python3","app.py"]
+CMD flask run -h 0.0.0.0 -p 5000
